@@ -12,25 +12,17 @@
   <script>
     window.$docsify = {
       name: 'Аэропорт Шереметьево',
-      loadSidebar: true,
+      loadSidebar: 'sidebar.md',  // ← указываем конкретное имя файла
       auto2top: true,
-      alias: {
-        '/.*/_sidebar.md': '/sidebar.md'
-      },
-      // Более умная функция request
       request: function(url) {
-        // Пропускаем служебные файлы
         if (url.includes('_sidebar') || url.includes('_coverpage') || url.includes('_navbar')) {
           return url;
         }
-        
-        // Для путей без расширения добавляем README.md
         if (!url.includes('.') && !url.endsWith('/')) {
           url += '/README.md';
         } else if (url.endsWith('/')) {
           url += 'README.md';
         }
-        
         return url;
       }
     }
