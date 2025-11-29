@@ -12,24 +12,21 @@
   <script>
     window.$docsify = {
       name: 'Аэропорт Шереметьево',
-      repo: '',
       loadSidebar: true,
       auto2top: true,
-      coverpage: false,
-      maxLevel: 3,
-      subMaxLevel: 2,
-      // Явно указываем, что для всех путей используется README.md
-      alias: {
-        '/.*/sidebar': '/_sidebar.md',
-        '/.*/readme': '/README.md'
+      // Принудительно указываем, что все страницы - это README.md
+      requestHeaders: {
+        'cache-control': 'max-age=0'
       },
-      // Указываем маршруты явно
-      routes: {
-        '/': '/README.md',
-        '/passengers/': '/passengers/README.md',
-        '/passengers/services/': '/passengers/services/README.md',
-        '/airlines/': '/airlines/README.md',
-        '/contacts/': '/contacts/README.md'
+      // Обработчик для динамического определения файлов
+      request: function(url) {
+        // Если это папка, добавляем README.md
+        if (url.endsWith('/') || !url.includes('.')) {
+          if (!url.endsWith('.md')) {
+            url += 'README.md';
+          }
+        }
+        return url;
       }
     }
   </script>
