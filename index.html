@@ -2,34 +2,18 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Аэропорт Шереметьево - Документация</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/themes/vue.css">
+  <title>Аэропорт Шереметьево - Тест</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .link { display: block; margin: 10px 0; padding: 10px; background: #f0f0f0; }
+  </style>
 </head>
 <body>
-  <div id="app"></div>
-  <script>
-    window.$docsify = {
-      name: 'Аэропорт Шереметьево',
-      loadSidebar: true,
-      auto2top: true,
-      // Принудительно указываем, что все страницы - это README.md
-      requestHeaders: {
-        'cache-control': 'max-age=0'
-      },
-      // Обработчик для динамического определения файлов
-      request: function(url) {
-        // Если это папка, добавляем README.md
-        if (url.endsWith('/') || !url.includes('.')) {
-          if (!url.endsWith('.md')) {
-            url += 'README.md';
-          }
-        }
-        return url;
-      }
-    }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+  <h1>Тест ссылок</h1>
+  <a class="link" href="/airport5/README.md">Главная (README.md)</a>
+  <a class="link" href="/airport5/passengers/README.md">Пассажиры</a>
+  <a class="link" href="/airport5/passengers/services/README.md">Услуги</a>
+  <a class="link" href="/airport5/airlines/README.md">Авиакомпании</a>
+  <a class="link" href="/airport5/contacts/README.md">Контакты</a>
 </body>
 </html>
