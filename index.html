@@ -18,16 +18,18 @@
       coverpage: false,
       maxLevel: 3,
       subMaxLevel: 2,
-      // Явно указываем маршруты
+      // Явно указываем, что для всех путей используется README.md
+      alias: {
+        '/.*/sidebar': '/_sidebar.md',
+        '/.*/readme': '/README.md'
+      },
+      // Указываем маршруты явно
       routes: {
+        '/': '/README.md',
         '/passengers/': '/passengers/README.md',
         '/passengers/services/': '/passengers/services/README.md',
-        '/airlines/': '/airlines/README.md', 
+        '/airlines/': '/airlines/README.md',
         '/contacts/': '/contacts/README.md'
-      },
-      // Альтернативная настройка для sidebar
-      alias: {
-        '/.*/_sidebar.md': '/_sidebar.md'
       }
     }
   </script>
