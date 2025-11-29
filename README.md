@@ -8,7 +8,7 @@
 * [Информация для пассажиров](/passengers/)
 * [Услуги в аэропорту](/passengers/services/)
 * [Информация для авиакомпаний](/airlines/)
-* [Контакты] (https://stefania-kov.github.io/airport5/#/contacts/README.md)
+* [Контакты](/contacts/)
 
 ---
 
