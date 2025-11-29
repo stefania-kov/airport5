@@ -14,24 +14,16 @@
       name: 'Аэропорт Шереметьево',
       loadSidebar: true,
       auto2top: true,
+      // Явно указываем все маршруты
+      routes: {
+        '/': 'README.md',
+        '/passengers/': 'passengers/README.md',
+        '/passengers/services/': 'passengers/services/README.md',
+        '/airlines/': 'airlines/README.md',
+        '/contacts/': 'contacts/README.md'
+      },
       alias: {
         '/.*/_sidebar.md': '/_sidebar.md'
-      },
-      // Исправленная функция request
-      request: function(url) {
-        console.log('Loading:', url); // Для отладки
-        
-        // Не изменяем URL для бокового меню и специальных файлов
-        if (url === '_sidebar.md' || url.includes('_sidebar')) {
-          return url;
-        }
-        
-        // Для обычных страниц добавляем README.md если нужно
-        if ((url.endsWith('/') || !url.includes('.')) && !url.endsWith('.md')) {
-          url += 'README.md';
-        }
-        
-        return url;
       }
     }
   </script>
