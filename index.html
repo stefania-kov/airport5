@@ -14,13 +14,13 @@
       name: 'Аэропорт Шереметьево',
       loadSidebar: true,
       auto2top: true,
-      // Принудительно указываем, что все страницы - это README.md
-      requestHeaders: {
-        'cache-control': 'max-age=0'
-      },
-      // Обработчик для динамического определения файлов
+      // Исправленная функция request
       request: function(url) {
-        // Если это папка, добавляем README.md
+        // Не изменяем URL для бокового меню
+        if (url === '_sidebar.md') {
+          return url;
+        }
+        // Для всех остальных URL добавляем README.md если нужно
         if (url.endsWith('/') || !url.includes('.')) {
           if (!url.endsWith('.md')) {
             url += 'README.md';
