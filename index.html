@@ -19,16 +19,18 @@
       },
       // Исправленная функция request
       request: function(url) {
-        // Не изменяем URL для бокового меню
-        if (url === '_sidebar.md') {
+        console.log('Loading:', url); // Для отладки
+        
+        // Не изменяем URL для бокового меню и специальных файлов
+        if (url === '_sidebar.md' || url.includes('_sidebar')) {
           return url;
         }
-        // Для всех остальных URL добавляем README.md если нужно
-        if (url.endsWith('/') || !url.includes('.')) {
-          if (!url.endsWith('.md')) {
-            url += 'README.md';
-          }
+        
+        // Для обычных страниц добавляем README.md если нужно
+        if ((url.endsWith('/') || !url.includes('.')) && !url.endsWith('.md')) {
+          url += 'README.md';
         }
+        
         return url;
       }
     }
