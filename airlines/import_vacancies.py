@@ -1,233 +1,140 @@
-import json
-from django.core.management.base import BaseCommand
-from portal.models import VacancyCategory, Vacancy
+{% extends 'base.html' %}
+{% load static %}
 
-class Command(BaseCommand):
-    help = 'Импорт вакансий из статического JS-массива'
+{% block title %}Вакансии — ГосНИИмаш{% endblock %}
 
-    def handle(self, *args, **options):
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/vacancies.css' %}?v={{ sv }}">
+{% endblock %}
 
-        vacancies_data = [
-            {
-                "id": 1,
-                "category": "it",
-                "categoryName": "IT",
-                "title": "Ведущий разработчик Python",
-                "department": "Отдел разработки",
-                "salary": "от 180 000 ₽",
-                "salary_min": 180000,
-                "salary_max": None,
-                "type": "Полная занятость",
-                "brief": "Разработка и поддержка backend-сервисов на Python/Django.",
-                "education": "Высшее техническое образование (информационные технологии, прикладная математика или смежные направления).",
-                "experience": "Опыт коммерческой разработки на Python от 3 лет. Знание Django, FastAPI, PostgreSQL, REST API.",
-                "duties": [
-                    "Разработка серверной части веб-приложений на Python/Django",
-                    "Проектирование и оптимизация баз данных (PostgreSQL)",
-                    "Написание unit- и интеграционных тестов",
-                    "Code review и наставничество junior-разработчиков",
-                    "Участие в архитектурных решениях совместно с командой",
-                ]
-            },
-            {
-                "id": 2,
-                "category": "it",
-                "categoryName": "IT",
-                "title": "Системный администратор",
-                "department": "IT-отдел",
-                "salary": "90 000 — 120 000 ₽",
-                "salary_min": 90000,
-                "salary_max": 120000,
-                "type": "Полная занятость",
-                "brief": "Поддержка и администрирование корпоративной ИТ-инфраструктуры.",
-                "education": "Высшее или среднее специальное образование в области информационных технологий.",
-                "experience": "Опыт работы системным администратором от 2 лет. Знание Windows Server, Active Directory, VMware.",
-                "duties": [
-                    "Администрирование серверной инфраструктуры (Windows Server / Linux)",
-                    "Поддержка сети: настройка коммутаторов, маршрутизаторов, VPN",
-                    "Управление учётными записями в Active Directory",
-                    "Резервное копирование и восстановление данных",
-                    "Техническая поддержка пользователей (2-я линия)",
-                ]
-            },
-            {
-                "id": 3,
-                "category": "engineering",
-                "categoryName": "Инженерия",
-                "title": "Инженер-конструктор",
-                "department": "Конструкторский отдел",
-                "salary": "от 110 000 ₽",
-                "salary_min": 110000,
-                "salary_max": None,
-                "type": "Полная занятость",
-                "brief": "Разработка конструкторской документации и технических решений.",
-                "education": "Высшее техническое образование (машиностроение, приборостроение или смежные специальности).",
-                "experience": "Опыт работы конструктором от 2 лет. Уверенное владение КОМПАС-3D или SolidWorks.",
-                "duties": [
-                    "Разработка конструкторской документации (КД) в соответствии с ЕСКД",
-                    "Проектирование деталей и узлов в CAD-системах",
-                    "Согласование технических решений с технологическим и производственным отделами",
-                    "Ведение архива конструкторской документации",
-                    "Участие в испытаниях и доработке изделий",
-                ]
-            },
-            {
-                "id": 4,
-                "category": "engineering",
-                "categoryName": "Инженерия",
-                "title": "Инженер по качесту",
-                "department": "Отдел технического контроля",
-                "salary": "85 000 — 105 000 ₽",
-                "salary_min": 85000,
-                "salary_max": 105000,
-                "type": "Полная занятость",
-                "brief": "Контроль качества продукции и соответствия стандартам.",
-                "education": "Высшее техническое образование. Знание стандартов ISO 9001.",
-                "experience": "Опыт работы в области управления качеством от 1 года.",
-                "duties": [
-                    "Входной, операционный и приёмочный контроль продукции",
-                    "Разработка и актуализация процедур системы менеджмента качества",
-                    "Анализ несоответствий и разработка корректирующих мероприятий",
-                    "Взаимодействие с поставщиками по вопросам качества",
-                    "Подготовка отчётности по качеству для руководства",
-                ]
-            },
-            {
-                "id": 5,
-                "category": "finance",
-                "categoryName": "Финансы",
-                "title": "Бухгалтер",
-                "department": "Бухгалтерия",
-                "salary": "75 000 — 95 000 ₽",
-                "salary_min": 75000,
-                "salary_max": 95000,
-                "type": "Полная занятость",
-                "brief": "Ведение бухгалтерского и налогового учёта организации.",
-                "education": "Высшее или среднее специальное образование по специальности «Бухгалтерский учёт и аудит».",
-                "experience": "Опыт работы бухгалтером от 2 лет. Знание 1С: Бухгалтерия 8.3, уверенное знание налогового законодательства РФ.",
-                "duties": [
-                    "Ведение участков бухгалтерского учёта (банк, касса, расчёты с поставщиками)",
-                    "Подготовка и сдача налоговой и бухгалтерской отчётности",
-                    "Расчёт и начисление заработной платы",
-                    "Сверка расчётов с контрагентами",
-                    "Взаимодействие с налоговыми органами и аудиторами",
-                ]
-            },
-            {
-                "id": 6,
-                "category": "finance",
-                "categoryName": "Финансы",
-                "title": "Финансовый аналитик",
-                "department": "Финансово-экономический отдел",
-                "salary": "от 130 000 ₽",
-                "salary_min": 130000,
-                "salary_max": None,
-                "type": "Полная занятость",
-                "brief": "Финансовый анализ, бюджетирование и подготовка управленческой отчётности.",
-                "education": "Высшее образование (финансы, экономика, математика). Приветствуется CFA или ACCA.",
-                "experience": "Опыт работы финансовым аналитиком от 3 лет. Продвинутый Excel, Power BI или аналоги.",
-                "duties": [
-                    "Формирование управленческой отчётности и финансовых моделей",
-                    "Бюджетирование и план-фактный анализ",
-                    "Анализ отклонений и подготовка аналитических записок",
-                    "Подготовка презентаций для руководства",
-                    "Участие в разработке KPI и систем мотивации",
-                ]
-            },
-            {
-                "id": 7,
-                "category": "hr",
-                "categoryName": "HR",
-                "title": "HR-менеджер",
-                "department": "Отдел персонала",
-                "salary": "80 000 — 100 000 ₽",
-                "salary_min": 80000,
-                "salary_max": 100000,
-                "type": "Полная занятость",
-                "brief": "Подбор персонала, адаптация сотрудников и кадровое делопроизводство.",
-                "education": "Высшее образование (управление персоналом, психология, менеджмент).",
-                "experience": "Опыт работы в HR от 2 лет. Знание трудового законодательства РФ и 1С: ЗУП.",
-                "duties": [
-                    "Полный цикл подбора персонала: от заявки до выхода кандидата",
-                    "Проведение первичных интервью и оценка кандидатов",
-                    "Ведение кадрового делопроизводства в соответствии с ТК РФ",
-                    "Организация адаптации новых сотрудников",
-                    "Поддержание HR-аналитики и отчётности",
-                ]
-            },
-            {
-                "id": 8,
-                "category": "management",
-                "categoryName": "Управление",
-                "title": "Руководитель проектов",
-                "department": "Проектный офис",
-                "salary": "от 200 000 ₽",
-                "salary_min": 200000,
-                "salary_max": None,
-                "type": "Полная занятость",
-                "brief": "Управление комплексными проектами полного цикла в производственной среде.",
-                "education": "Высшее образование (технические или управленческие специальности). Желателен PMP или Prince2.",
-                "experience": "Опыт управления проектами от 5 лет, в т.ч. крупными межфункциональными проектами.",
-                "duties": [
-                    "Планирование, координация и контроль выполнения проектов",
-                    "Управление командами специалистов из разных подразделений",
-                    "Взаимодействие с заказчиком и стейкхолдерами",
-                    "Управление рисками, сроками и бюджетом проекта",
-                    "Подготовка отчётности и презентаций для руководства",
-                ]
-            },
-            {
-                "id": 9,
-                "category": "it",
-                "categoryName": "IT",
-                "title": "Специалист по информационной безопасности",
-                "department": "Отдел ИБ",
-                "salary": "150 000 — 190 000 ₽",
-                "salary_min": 150000,
-                "salary_max": 190000,
-                "type": "Полная занятость",
-                "brief": "Обеспечение безопасности корпоративной ИТ-инфраструктуры и данных.",
-                "education": "Высшее техническое образование в области информационной безопасности или ИТ. CISSP / CEH — приветствуется.",
-                "experience": "Опыт работы в сфере информационной безопасности от 3 лет.",
-                "duties": [
-                    "Мониторинг и реагирование на инциденты информационной безопасности",
-                    "Аудит и тестирование на проникновение корпоративных систем",
-                    "Разработка политик и регламентов ИБ",
-                    "Настройка и администрирование средств защиты (SIEM, DLP, WAF)",
-                    "Проведение обучения сотрудников по вопросам ИБ",
-                ]
-            },            
-        ]
+{% block page_data %}vacancies{% endblock %}
 
-        cat_order = 0
-        for v in vacancies_data:
-            cat_slug = v['category']
-            cat_name = v['categoryName']
-            cat, created = VacancyCategory.objects.get_or_create(
-                slug=cat_slug,
-                defaults={'name': cat_name, 'order': cat_order}
-            )
-            if created:
-                cat_order += 1
-                self.stdout.write(self.style.SUCCESS(f'➕ Категория: {cat_name}'))
+{% block content %}
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <div>
+            <div class="page-hero-title">Вакансии</div>
+            <div class="page-hero-subtitle">Открытые позиции компании — найдите подходящую возможность</div>
+        </div>
+        <div class="page-hero-icon" style="background: #1B3A8C"><i class="bi bi-briefcase-fill"></i></div>
+    </div>
+</section>
 
-        for v in vacancies_data:
-            cat = VacancyCategory.objects.get(slug=v['category'])
-            duties_text = '\n'.join(v['duties'])
-            vacancy, created = Vacancy.objects.update_or_create(
-                title=v['title'],
-                category=cat,
-                defaults={
-                    'department': v['department'],
-                    'salary_min': v.get('salary_min'),
-                    'salary_max': v.get('salary_max'),
-                    'employment_type': 'full',
-                    'education': v['education'],
-                    'experience': v['experience'],
-                    'duties': duties_text,
-                    'is_active': True,
-                }
-            )
-            self.stdout.write(f'{"✅" if created else "🔄"} {v["title"]}')
+<section class="vac-section">
+    <div class="container">
+        <div class="filter-row">
+            <div class="dept-dropdown" id="catDropdown">
+                <button class="dept-dropdown-btn" id="catDropdownBtn">
+                    <i class="bi bi-grid"></i>
+                    <span id="catDropdownLabel">Все направления</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </button>
+                <div class="dept-dropdown-menu" id="catDropdownMenu">
+                    <div class="dept-menu-item dept-menu-item--all active" data-category="all">
+                        <span class="dept-menu-label"><i class="bi bi-grid"></i> Все вакансии</span>
+                        <span class="dept-menu-count" id="countAll">0</span>
+                    </div>
+                    <div class="dept-dropdown-divider"></div>
+                    <div class="dept-menu-item" data-category="it">
+                        <span class="dept-menu-label"><i class="bi bi-cpu"></i> IT</span>
+                        <span class="dept-menu-count" id="countIt">0</span>
+                    </div>
+                    <div class="dept-menu-item" data-category="engineering">
+                        <span class="dept-menu-label"><i class="bi bi-gear-fill"></i> Инженерия</span>
+                        <span class="dept-menu-count" id="countEngineering">0</span>
+                    </div>
+                    <div class="dept-menu-item" data-category="finance">
+                        <span class="dept-menu-label"><i class="bi bi-currency-ruble"></i> Финансы</span>
+                        <span class="dept-menu-count" id="countFinance">0</span>
+                    </div>
+                    <div class="dept-menu-item" data-category="hr">
+                        <span class="dept-menu-label"><i class="bi bi-person-badge"></i> HR</span>
+                        <span class="dept-menu-count" id="countHr">0</span>
+                    </div>
+                    <div class="dept-menu-item" data-category="management">
+                        <span class="dept-menu-label"><i class="bi bi-diagram-3-fill"></i> Управление</span>
+                        <span class="dept-menu-count" id="countManagement">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pb-search">
+                <i class="bi bi-search"></i>
+                <input type="text" id="vacSearchInput" placeholder="Поиск по должности или отделу...">
+            </div>
+        </div>
 
-        self.stdout.write(self.style.SUCCESS('Импорт вакансий завершён'))
+        <div class="vac-grid" id="vacGrid"></div>
+    </div>
+</section>
+
+<!-- МОДАЛЬНОЕ ОКНО -->
+<div class="vac-modal" id="vacModal">
+    <div class="vac-modal-content">
+        <button class="vac-modal-close" id="vacModalClose"><i class="bi bi-x-lg"></i></button>
+
+        <div class="vac-modal-header">
+            <div class="vac-modal-icon" id="vacModalIcon"><i class="bi bi-briefcase-fill"></i></div>
+            <div>
+                <div class="vac-modal-title" id="vacModalTitle">Должность</div>
+                <div class="vac-modal-meta-row">
+                    <span class="vac-modal-dept" id="vacModalDept">Отдел</span>
+                    <span class="vac-category-badge" id="vacModalBadge">Категория</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="vac-modal-salary-block" id="vacModalSalaryBlock">
+            <i class="bi bi-cash-stack"></i>
+            <span id="vacModalSalary">—</span>
+            <span class="vac-modal-type" id="vacModalType"></span>
+        </div>
+
+        <div class="vac-modal-body">
+            <div class="vac-req-section">
+                <div class="vac-req-title"><i class="bi bi-mortarboard-fill"></i> Образование</div>
+                <div class="vac-req-text" id="vacModalEdu">—</div>
+            </div>
+            <div class="vac-req-section">
+                <div class="vac-req-title"><i class="bi bi-clock-history"></i> Опыт работы</div>
+                <div class="vac-req-text" id="vacModalExp">—</div>
+            </div>
+            <div class="vac-req-section">
+                <div class="vac-req-title"><i class="bi bi-list-check"></i> Обязанности</div>
+                <ul class="vac-duties-list" id="vacModalDuties"></ul>
+            </div>
+        </div>
+
+        <div class="vac-modal-footer">
+            <button class="vac-modal-btn vac-modal-btn-outline" id="vacModalCloseBtn">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Прямая вставка JSON строки
+    const vacanciesDataJson = '{{ vacancies_json|escapejs }}';
+    console.log('JSON строка длина:', vacanciesDataJson.length);
+    
+    // Парсим JSON
+    let vacancies;
+    try {
+        vacancies = JSON.parse(vacanciesDataJson);
+        console.log('Вакансий получено:', vacancies.length);
+        console.log('Массив?', Array.isArray(vacancies));
+    } catch(e) {
+        console.error('Ошибка парсинга:', e);
+        vacancies = [];
+    }
+    
+    if (Array.isArray(vacancies) && vacancies.length) {
+        window.vacanciesData = vacancies;
+    } else {
+        window.vacanciesData = [];
+    }
+</script>
+
+<script src="{% static 'portal/js/vacancies.js' %}?v={{ sv }}"></script>
+{% endblock %}
